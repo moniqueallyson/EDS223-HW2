@@ -16,7 +16,7 @@ format: pdf
 
 
 
-# Read in package and data 
+## Read in package and data 
 
 ```{r}
 library(tidyverse) # For R
@@ -36,4 +36,26 @@ quiet = TRUE)
 map_la <- sf::st_read(here::here("data",
 "mapping-inequality","mapping-inequality-los-angeles.json"),
 quiet = TRUE) 
+ ```
+
+ ## Data cleaning
+
+
+ ```{r}
+ 
+
+
+ ```
+
+
+
+ # Part 1: Legacy of redlining in current environmental (in)justice
+
+
+ # Part 2: Legacy of redlining in pedestrian and bike accidents
+
+
+
+ ```{r}
+ 
  ```

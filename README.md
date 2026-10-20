@@ -29,15 +29,13 @@ The author for this homework assisgnment is Monique Hernandez.
 
 ## Important Notice
 
-WThe data used for this assignment comes from the Environmental Justice Screening and Mapping Tool, despite it no longer in operation there is still aan unofficial version of it [here](https://pedp-ejscreen.azurewebsites.net/).
+The data used for this assignment comes from the Environmental Justice Screening and Mapping Tool, despite it no longer in operation there is still aan unofficial version of it [here](https://pedp-ejscreen.azurewebsites.net/).
 
 ## References
 
 "EJScreen Technical Documentation", U.S. Environmental Protection Agency (EPA), 2022.[Accessed: Oct. 19, 2026]
 
 Taylor, N. L., Porter, J. M., Bryan, S., Harmon, K. J., & Sandt, L. S. (2023). "Structural racism and pedestrian safety: Measuring the association between historical redlining and contemporary pedestrian fatalities across the United States", 2010–2019. American Journal of Public Health, 113. [Accessed: Oct. 19, 2026]
-
-
 
 Gee, G. C. (2008). A multilevel analysis of the relationship between institutional and individual racial discrimination and health status. American journal of public health, 98(Supplement_1), S48-S56.
 
