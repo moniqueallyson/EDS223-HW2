@@ -1,0 +1,39 @@
+---
+title: "EDS 223 Assignment 1"
+subtitle: "Map making practice"
+author: "Monique Hernandez"
+date: 10--2026
+execute:
+  eval: true
+  warning: false
+  message: false
+format: pdf
+---
+
+# Environmental and Racial Injustice: Redlined Communities and Pedestrian Safety
+
+
+
+
+
+# Read in package and data 
+
+```{r}
+library(tidyverse) # For R
+library(sf) # Read vector 
+library(here) # Locate files
+library(stars)
+library(tmap) # For static and interactive maps
+library(janitor) # Clean data
+
+ 
+# read in geodatabase of EJScreen data at the Census Block Group level
+ejscreen <- sf::st_read(here::here("data",
+"ejscreen","EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"),
+quiet = TRUE) 
+
+# read in geodatabase of EJScreen data at the Census Block Group level
+map_la <- sf::st_read(here::here("data",
+"mapping-inequality","mapping-inequality-los-angeles.json"),
+quiet = TRUE) 
+ ```
