@@ -2,7 +2,7 @@
 title: "EDS 223 Assignment 1"
 subtitle: "Map making practice"
 author: "Monique Hernandez"
-date: 10--2026
+date: 10-24-2026
 execute:
   eval: true
   warning: false
@@ -14,10 +14,7 @@ format: pdf
 
 
 
-
-
-## Read in package and data 
-
+## Load packages
 ```{r}
 library(tidyverse) # For R
 library(sf) # Read vector 
@@ -25,31 +22,86 @@ library(here) # Locate files
 library(stars)
 library(tmap) # For static and interactive maps
 library(janitor) # Clean data
+```
 
- 
+# Read EJscreen and Data
+ ```{r}
 # read in geodatabase of EJScreen data at the Census Block Group level
 ejscreen <- sf::st_read(here::here("data",
 "ejscreen","EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"),
 quiet = TRUE) 
 
-# read in geodatabase of EJScreen data at the Census Block Group level
-map_la <- sf::st_read(here::here("data",
+# Read in geodatabase of EJScreen data at the Census Block Group level
+holc_la <- sf::st_read(here::here("data",
 "mapping-inequality","mapping-inequality-los-angeles.json"),
 quiet = TRUE) 
+
+ # Filter to a state you are interested in
+california <- ejscreen |> 
+  dplyr::filter(ST_ABBREV == "CA") |>
+  clean_names()
+
+
+# Filter to a county you are interested in
+los_angeles <- ejscreen |> 
+  dplyr::filter(CNTY_NAME %in% c("Los Angeles County")) |>
+  clean_names()
+
+# Find the average values for all variables within counties
+la_counties <- aggregate(califronia,
+by = list(california$CNTY_NAME), FUN = mean) |>
+  clean_names()
+
  ```
 
- ## Data cleaning
+## Check crs
+
+```{r}
+
+```
 
 
+ ## Histroical redlining neighborhoods
  ```{r}
- 
+m1 <- tm_shape(los_angeles) +
+    tm_graticules() +
+    tm_shape(holc_la) +
+    tm_polygons(fill = "grade")
 
+m1
 
  ```
 
+
+```{r}
+
+m2 <- tm_shape(los_angeles) +
+    tm_graticules() +
+    tm_shape(holc_la) +
+    tm_polygons(fill = "grade")
+
+m2
+```
+
+
+## Create a table
+
+```{r}
+
+
+```
 
 
  # Part 1: Legacy of redlining in current environmental (in)justice
+
+
+
+
+```{r}
+
+
+```
+
 
 
  # Part 2: Legacy of redlining in pedestrian and bike accidents
