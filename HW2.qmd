@@ -48,43 +48,71 @@ los_angeles <- ejscreen |>
   clean_names()
 
 # Find the average values for all variables within counties
-la_counties <- aggregate(califronia,
-by = list(california$CNTY_NAME), FUN = mean) |>
-  clean_names()
+ca_counties <- aggregate(california,
+by = list(california$cnty_name), FUN = mean)
 
  ```
 
-## Check crs
-
-```{r}
-
-```
-
+ # Part 1: Legacy of redlining in current environmental (in)justice
 
  ## Histroical redlining neighborhoods
- ```{r}
-m1 <- tm_shape(los_angeles) +
+```{r}
+
+m1 <- tm_shape(california) + # Base map
     tm_graticules() +
-    tm_shape(holc_la) +
-    tm_polygons(fill = "grade")
-
+    tm_polygons() +
+    tm_scalebar(position = c("left", "bottom")) +
+    tm_compass(type = "8star",
+    size = 3, position = c(
+      "right", "top"
+      )) +
+  tm_shape(holc_la, is.main = TRUE) + # Main map
+      tm_polygons(fill =
+      "grade",
+      fill.legend =
+      tm_legend(orientation =
+      "landscape")) +
+      tm_title(text = "Historically redlined neighborhoods in Los Angeles by grade (Mapping Inequality, 2023)", size = 1)
 m1
+```
+## Create a table
+percentage of census block groups that fall within each HOLC grade
+percent of census black groups that don’t fall within a HOLC grade in your table
+Hint: The HOLC data contains the grades and the EJScreen data contains the census blocks, so you will need to combine the data spatially before doing summary statistics. Once you combine and no longer need the geometries, you can use st_drop_geometry().
 
- ```
+### First: check the crs
+```{r}
+# Check crs
+st_crs(los_angeles)
+st_crs(holc_la)
 
+# Transform holc
+holc_transform <- st_transform(holc_la, 3857)
+
+# Verify
+if(st_crs(los_angeles) ==
+  st_crs(holc_la)){
+  print("it's a match!")
+} else {
+  print("still not a match")
+} # Returned "it's a match!"
+
+# Join the two data
+la_join <- st_join(los_angeles, holc_transform, left = TRUE)
+```
+
+### Create table
 
 ```{r}
 
-m2 <- tm_shape(los_angeles) +
-    tm_graticules() +
-    tm_shape(holc_la) +
-    tm_polygons(fill = "grade")
+census_holc <- la_join |>
+  group_by(grade)
 
-m2
+
 ```
 
-
-## Create a table
+## Two visualizations
+Create at least two visualizations summarizing current conditions (from the EJScreen data) within HOLC grades using the mean of the following variables (you may combine variables in a single visualization or look at a single variable per plot)
 
 ```{r}
 
@@ -106,7 +134,11 @@ m2
 
  # Part 2: Legacy of redlining in pedestrian and bike accidents
 
+## Check crs
 
+```{r}
+
+```
 
  ```{r}
  
