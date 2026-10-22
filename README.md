@@ -1,4 +1,4 @@
-# EDS223 Homework Assignmnet 1: Map making practice
+# EDS223 Homework Assignmnet 2: Exploring patterns of environmental justice
 
 <p align="center">
   <img src="image/image-ej.jpeg" alt="Map making" width="600">
