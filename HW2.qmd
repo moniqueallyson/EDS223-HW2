@@ -124,6 +124,7 @@ grade_perc |>
 ### Create two visualizations
 
 Create at least two visualizations within HOLC grades:
+
 - % low income
 - percentile for Particulate Matter 2.5
 - percentile for low life expectancy
