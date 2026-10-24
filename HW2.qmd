@@ -49,6 +49,7 @@ los_angeles <- ejscreen |>
 ### Create a map of histroical redlining neighborhoods
 
 Create a map of historical redlining neighborhoods, including:
+
 - neighborhoods colored by HOLC grade
 - an appropriate base map
 - a clear title and legend
@@ -77,6 +78,7 @@ holc_color <- c(
 
 ### Create a table
 Create a table summarizing:
+
 - % of census block groups that **fall** within each HOLC grade
 - % of census black groups that **don’t fall** within a HOLC grade
 
@@ -162,7 +164,7 @@ ggplot(combined_groups, aes(x = grade, y = mean_percentage, fill = grade)) +
   facet_wrap(~condition_within_HOLC, scales = "free_y", labeller = as_labeller(c("mean_low_inc" = "% of Low Income",
   "mean_pm25" = "PM25 Percentile",
   "mean_life_exp" = " Life Expectancy Percentile"))) +
-  labs(title= "Socioeconomic and environmental conditions within HOLC blocks") +
+  labs(title= "Socioeconomic and environmental conditions by HOLC grade") +
   labs(x = "Grade", y = "Average Value") +
   scale_fill_manual(values = holc_color)
 
