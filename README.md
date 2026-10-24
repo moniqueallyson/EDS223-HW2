@@ -1,7 +1,7 @@
 # EDS223 Homework Assignmnet 2: Exploring patterns of environmental justice
 
 <p align="center">
-  <img src="image/holc.jpeg" alt="Map making" width="600">
+  <img src="image/holc.jpg" alt="Map making" width="600">
 </p>
 
 This repository contains the materials for the [second homework assignment](https://eds-223-geospatial.github.io/assignments/HW2V2.html) for [EDS 223: Geospatial Analysis and Remote Sensing](https://bren.ucsb.edu/courses/eds-223), a course that is part of the Master of Environmental Data Science program completed at the Bren School of Environmental Science and Management.
