@@ -7,10 +7,13 @@ execute:
   eval: true
   warning: false
   message: false
-format: pdf
+format: typst
 ---
 
 # Environmental and Racial Injustice: Redlined Communities and Pedestrian Safety
+
+Environmental justice is a current-day issue that originates from historical malpractices such as the 1930’s the Home Owners’ Loan Corporation (HOLC) that rendered people of color receiving a home loan depending on the area graded. The United States to this day has racial segregation actively present in communities deemed "hazardous" from the HOLC. The neighborhoods were graded, ranging A (green) to D (red), based on their front-facing value in regards to safety and desireability. The term 'redlining' has been coined and reflects historical environmental injustice people face, such as hotter summers due to less shade, higher health concerns from pollution, and overall less public safety, pertaining, but not limited to pedestrian and/or bicyclists.
+
 
 ## Load packages
 ```{r}
@@ -60,7 +63,7 @@ holc_color <- c(
  )
  
  # Map of Los Angeles by HOLC grade
- m1 <- tm_basemap(server = "Esri.WorldTopoMap") +
+ tm_basemap(server = "Esri.WorldTopoMap") +
   tm_shape(holc_la, is.main=TRUE) + # Main map
   tm_polygons(fill = "grade",
   fill.scale = tm_scale_categorical(values = holc_color),
@@ -68,8 +71,7 @@ holc_color <- c(
         tm_title(text = "Historically redlined neighborhoods in Los Angeles by grade (Mapping Inequality, 2023)", size = 1) +
         tm_scalebar(position = c("right", "top"), size = 5) +
         tm_compass(type = "8star",
-        size = 3, position = c("left", "bottom"))
- m1
+        size = 2, position = c("left", "bottom"))
 
 ```
 
@@ -96,7 +98,7 @@ la_join <- st_join(los_angeles, holc_transform) |>
   select(id, grade)
 ```
 ```{r}
-grade_perc<- la_join |> 
+grade_perc <- la_join |> 
   # Group by grade
   group_by(grade) |> 
   # Summarize by count of nrows
@@ -112,7 +114,8 @@ grade_perc<- la_join |>
 # Convert dataframe to a table
 grade_perc |> 
   gt() |> 
-  tab_header(title = md("Percentage (%) of L.A. neighborhoods by HOLC grade"))
+  tab_header(title = md("Percentage (%) of L.A. neighborhoods by HOLC grade")) |> 
+  tab_options(table.width = pct(50), heading.title.font.size = 10)
 ```
 
 
@@ -123,7 +126,6 @@ Create at least two visualizations within HOLC grades:
 - percentile for Particulate Matter 2.5
 - percentile for low life expectancy
 
-
 ```{r}
 # Join LA and redline spatial data to create a summary
 holc_join <- st_join(los_angeles, holc_transform,
@@ -131,7 +133,7 @@ join = st_intersects)
 ```
 
 ```{r}
-# 
+# Grouped per environemental conditions by grade
 grouped_sum <- holc_join |> 
   group_by(grade) |> 
   summarise(
@@ -145,7 +147,7 @@ grouped_sum <- holc_join |>
 ```
 
 ```{r}
-# Create dataframe with one column for variable conditions
+# Pivot longer to one column for all environmental conditions
  combined_groups <- grouped_sum |> 
   pivot_longer(
     cols = c(mean_low_inc, mean_pm25, mean_life_exp),
@@ -154,67 +156,95 @@ grouped_sum <- holc_join |>
 ```
 
 ```{r}
-
-
-condition_name <- list(
-  "mean_low_inc" = "low income percentage",
-  "mean_pm25" = "pm25 percentile",
-  "mean_life_exp" = "life exp percentile"
-)
-
-condition_labeller <- function(variable,value){
-  return(condition_name[value])
-}
-
 # Facet wrap by HOLC grades for each current variable conditions
 ggplot(combined_groups, aes(x = grade, y = mean_percentage, fill = grade)) +
   geom_col() +
-  facet_wrap(~condition_within_HOLC, scales = "free_y", labeller = labeller(condition_labeller)) +
-  labs(title= "The average current conditions within HOLC blocks") +
-  labs(x = "Grade", y = "") +
+  facet_wrap(~condition_within_HOLC, scales = "free_y", labeller = as_labeller(c("mean_low_inc" = "% of Low Income",
+  "mean_pm25" = "PM25 Percentile",
+  "mean_life_exp" = " Life Expectancy Percentile"))) +
+  labs(title= "Socioeconomic and environmental conditions within HOLC blocks") +
+  labs(x = "Grade", y = "Average Value") +
   scale_fill_manual(values = holc_color)
 
-
-```
-
-
-```{r}
-ggplot(combined_groups, aes(x = grade, y = mean_percentage, fill = grade)) +
-  geom_col() +
-  facet_wrap(~condition_within_HOLC, scales = "free_y", labeller=as_labeller(c( "mean_low_inc" = "Mean % of Low Income",
-  "mean_pm25" = "Mean PM25 Percentile",
-  "mean_life_exp" = " Mean Life Expectancy Percentile"))) +
-  labs(title= "Environmental conditions within HOLC blocks") +
-  labs(x = "Grade", y = "count") +
-  scale_fill_manual(values = holc_color)
 ```
 
 ### Interpretation
 Discuss potential relationships between historical redlining grades and current environmental/socioeconomic conditions:
 
-For the low life expectancy condition, it shows that those grouped in grade D are roughtly 58% higher to have a low life expectancg than those in the surrounding L.A area, but in neighborhoods with higher grades.
+While looking at the graphs, the group graded "D" had a higher average for all three conditions: percentage of low income, life expectancy percentile, and pm25 percentile. For the life expectancy, it shows roughly 60th percentile for those in group D meaning they have a lower life expectancy than 60% of those in the other neighboring area. The percentile lower with each grade and A has the smallest percentile. The low income is found to be at an average of 40% in group D. While the pm25 percentile was found roughly the same, since it could just mean environmental hazards could be refelcted in all neighborhoods despite the grading as those are independent factors such as the air in the area. The relationship could be that those who live these areas considered undesireable are the facing the environmental and socioeconomic factors that can be traced back to redlining. 
 
  # Part 2: Legacy of redlining in pedestrian and bike accidents
 
 ```{r}
 # Read in Crash data
  crashes <- read_csv(here::here("data",
-"SWITRS_LA", "Crashes.csv")) |> 
-  drop_na(POINT_X, POINT_Y) |> 
-  st_as_sf(coords = c("POINT_X", "POINT_Y"), crs = "EPSG:4326")
-
-```
-```{r}
-# Transform CRS of crashes dataset
-holc_transform <- st_transform(crashes, crs = st_crs(holc_la))
+"SWITRS_LA", "Crashes.csv"))
 ```
 
-```{r}
-# Verify CRS change
-st_crs(holc_transform) == st_crs(los_angeles)
+```{r, results = 'hide'}
+# Filter through columns for NA
+crash_bk_ped <- crashes |> 
+  filter(PEDESTRIAN_ACCIDENT == "Y" | BICYCLE_ACCIDENT == "Y") |> 
+  filter(POINT_X != 'NA')
+
+# Count columns with NA that returns true
+sum(crash_bk_ped$POINT_X == 'NA')
+sum(crash_bk_ped$LATITUDE == 'NA')
+
+# Transform data to a sf
+crash_transform <- st_as_sf(crash_bk_ped, coords = c('POINT_X', 'POINT_Y'), crs = 4326)
+```
+```{r, results= 'hide'}
+# Check crs for both sf
+st_crs(crash_transform)
+st_crs(holc_join)
+```
+
+```{r, results = 'hide'}
+# Check the matching crs
+st_crs(crash_transform) == st_crs(holc_join) # returned false
 ```
 ```{r}
-# Join the datasets, left join by default
-la_join <- st_join(los_angeles, holc_transform) |> 
-  select(id, grade)
+# Transform to match crs
+crash_object <- st_transform(crash_transform, st_crs(holc_join))
+```
+
+```{r}
+# Subset points
+holc_crashes <- crash_object[holc_join, ]
+
+# Left join
+crash_left <- st_join(holc_crashes, holc_join)
+```
+
+
+```{r}
+#Create a table with grade and number of points filtering out NA's
+crash_table <- crash_left |>
+  filter(!is.na(grade)) |>
+  group_by(grade) |>
+  summarise(n_points = n()) |>
+  st_drop_geometry()
+```
+
+
+```{r}
+# Mutate values to percentages
+crash_perc <- crash_table |>
+mutate(percentage = 100 * (n_points/sum(crash_table$n_points)))
+# group by grade column as categorical
+crash_perc$grade <- as.factor(crash_perc$grade)
+# Convert to decimal for percentage
+crash_perc$percentage <- as.double(crash_perc$percentage)
+```
+
+```{r}
+# Plot the bike and pedestrian accident by grade and percentage
+ggplot(crash_perc, aes(x = grade, y = percentage, fill = grade)) +
+geom_col() +
+scale_fill_manual(values = holc_color) +
+labs(x = "Grade", y = "Percentage (%)") +
+labs(title= "Bike and pedestrian accidents and fatalities by HOLC grade in
+Los Angeles")
+
 ```
