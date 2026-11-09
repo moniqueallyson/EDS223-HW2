@@ -244,3 +244,7 @@ labs(title= "Bike and pedestrian accidents and fatalities by HOLC grade in
 Los Angeles")
 
 ```
+
+**Revision memo:**
+
+For the data process, I had used the `holc_join` which from earlier joined my LA data with the HOLC grades which is what I used for the bike pedestrian crash. For the revision, I used the `holc_transform` which just has the HOLC dataset that I used to match the LA crs. So, the figure now is correct. This will show the correct figures rather than having those extra numbers included into the graph by calculating things twice due to the wrong dataset I used before.
