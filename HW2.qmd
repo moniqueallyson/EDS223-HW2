@@ -195,31 +195,24 @@ sum(crash_bk_ped$POINT_X == 'NA')
 sum(crash_bk_ped$LATITUDE == 'NA')
 
 # Transform data to a sf
-crash_transform <- st_as_sf(crash_bk_ped, coords = c('POINT_X', 'POINT_Y'), crs = 4326)
-```
-```{r, results= 'hide'}
-# Check crs for both sf
-st_crs(crash_transform)
-st_crs(holc_join)
-```
+crash_holc <- st_as_sf(crash_bk_ped, coords = c('POINT_X', 'POINT_Y'), crs = 4326) |> 
+  st_transform(st_crs(holc_transform))
 
-```{r, results = 'hide'}
-# Check the matching crs
-st_crs(crash_transform) == st_crs(holc_join) # returned false
-```
-```{r}
-# Transform to match crs
-crash_object <- st_transform(crash_transform, st_crs(holc_join))
 ```
 
 ```{r}
-# Subset points
-holc_crashes <- crash_object[holc_join, ]
-
-# Left join
-crash_left <- st_join(holc_crashes, holc_join)
+# Checking if CRSs match
+if(st_crs(crash_holc) == st_crs(holc_transform)){
+  print("It's a match!")
+}else {
+  warning("Still not a match.")
+}
 ```
 
+```{r}
+# Join using holc_transform
+crash_left <- st_join(crash_holc, holc_transform)
+```
 
 ```{r}
 #Create a table with grade and number of points filtering out NA's
